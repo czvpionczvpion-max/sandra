@@ -713,46 +713,82 @@
       </div>
     </main>
     <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const copyButton = document.getElementById('copyButton');
-      const defaultContent = copyButton.querySelector('.default-content');
-      const successContent = copyButton.querySelector('.success-content');
+      document.addEventListener('DOMContentLoaded', () => {
+        const copyButton = document.getElementById('copyButton');
+        const defaultContent = copyButton.querySelector('.default-content');
+        const successContent = copyButton.querySelector('.success-content');
 
-      // Zmienna do blokowania wielokrotnego klikania
-      let isCopying = false;
+        let isCopying = false;
 
-      copyButton.addEventListener('click', () => {
-        // Jeśli animacja jest w trakcie, nie rób nic
-        if (isCopying) {
-          return;
+        // Add both click and touchstart events for better mobile support
+        copyButton.addEventListener('click', handleCopy);
+        copyButton.addEventListener('touchstart', handleCopy, { passive: true });
+
+        async function handleCopy(e) {
+          // Prevent default on touch to avoid any browser behaviors
+          if (e.type === 'touchstart') {
+            e.preventDefault();
+          }
+
+          if (isCopying) return;
+
+          const textToCopy = copyButton.dataset.copyText;
+
+          try {
+            // Try modern clipboard API first
+            if (navigator.clipboard && window.isSecureContext) {
+              await navigator.clipboard.writeText(textToCopy);
+            } else {
+              // Use fallback method
+              fallbackCopyText(textToCopy);
+              return;
+            }
+            showSuccess();
+          } catch (err) {
+            console.error('Copy failed: ', err);
+            // Optionally show error message to user
+          }
         }
 
-        // Tekst do skopiowania pobierany z atrybutu data-copy-text
-        const textToCopy = copyButton.dataset.copyText;
-
-        // Użycie nowoczesnego API schowka
-        navigator.clipboard.writeText(textToCopy).then(() => {
-          // Rozpocznij animację
+        function showSuccess() {
           isCopying = true;
-          
-          // Zmień wygląd i treść
           defaultContent.style.display = 'none';
           successContent.style.display = 'inline-flex';
           copyButton.classList.add('copied');
 
-          // Ustaw timer, aby przywrócić domyślny stan po 2 sekundach
           setTimeout(() => {
             defaultContent.style.display = 'inline-flex';
             successContent.style.display = 'none';
             copyButton.classList.remove('copied');
-            isCopying = false; // Odblokuj przycisk
-          }, 2000); // 2000 milisekund = 2 sekundy
+            isCopying = false;
+          }, 2000);
+        }
+
+        function fallbackCopyText(text) {
+          const textArea = document.createElement('textarea');
+          textArea.value = text;
+          textArea.style.position = 'fixed';
+          textArea.style.left = '-999999px';
+          textArea.style.top = '-999999px';
+          textArea.style.opacity = '0';
+          document.body.appendChild(textArea);
           
-        }).catch(err => {
-          console.error('Błąd kopiowania do schowka: ', err);
-        });
+          // Different selection approach for mobile
+          textArea.select();
+          textArea.setSelectionRange(0, 99999); // For mobile devices
+          
+          try {
+            const successful = document.execCommand('copy');
+            document.body.removeChild(textArea);
+            if (successful) {
+              showSuccess();
+            }
+          } catch (err) {
+            document.body.removeChild(textArea);
+            console.error('Fallback copy failed: ', err);
+          }
+        }
       });
-    });
     </script>
   </body>
 </html>
