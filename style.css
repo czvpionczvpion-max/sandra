@@ -4668,3 +4668,71 @@ body {
   background: url(https://cdn.discordapp.com/attachments/1203384531957059626/1427292908536725534/diamond-png-4.png?ex=68ee559b&is=68ed041b&hm=8bce9e87a98eec57dbec029c226e2ed06d38b40212cb21bd04e4114647c8cade&);
   background-size: 100% 100%;
 }
+
+@font-face {
+  font-family: neueBold;
+  src: url(./Neue-Haas-Unica-Pro/NeueHaasUnicaPro-Bold.ttf);
+}
+
+.cusfont {
+  font-family: neueBold
+}
+
+@media only screen and (min-width: 770px) {
+  .spinbara {
+    margin-top: 260px; 
+  }
+}
+
+@media only screen and (max-width: 770px) {
+  .spinbara {
+    margin-top: 50px; 
+  }
+}
+
+.glass-copy-button {
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 28px;
+    border: none;
+    cursor: pointer;
+    min-width: 200px; 
+
+
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+
+
+    background: transparent;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+
+    transition: all 0.25s ease-in-out;
+}
+  
+.glass-copy-button .default-content,
+.glass-copy-button .success-content {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.glass-copy-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+
+.glass-copy-button.copied {
+  background: rgba(46, 204, 113, 0.4);
+  border-color: rgba(46, 204, 113, 0.7);
+  transform: translateY(-2px);
+}
